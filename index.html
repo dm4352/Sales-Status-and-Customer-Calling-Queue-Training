@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eclipse ERP Sales Order Status Training</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #7f8c8d;
+            font-size: 1.2em;
+        }
+
+        .training-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .status-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .status-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            border-color: #3498db;
+        }
+
+        .status-card.ship {
+            border-left: 5px solid #27ae60;
+        }
+
+        .status-card.call {
+            border-left: 5px solid #e74c3c;
+        }
+
+        .status-card.special {
+            border-left: 5px solid #f39c12;
+        }
+
+        .status-card h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .inventory-commitment {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .inventory-commitment.immediate {
+            background: #f8d7da;
+            border-color: #f5c6cb;
+        }
+
+        .inventory-commitment.future {
+            background: #d1ecf1;
+            border-color: #bee5eb;
+        }
+
+        .quiz-section {
+            margin-top: 30px;
+        }
+
+        .question {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .question h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background: #f8f9fa;
+        }
+
+        .option.selected {
+            background: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        .option.correct {
+            background: #27ae60;
+            color: white;
+            border-color: #219a52;
+        }
+
+        .option.incorrect {
+            background: #e74c3c;
+            color: white;
+            border-color: #c0392b;
+        }
+
+        .explanation {
+            background: #e8f5e8;
+            border-left: 4px solid #27ae60;
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 0 8px 8px 0;
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 8px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #74b9ff 0%, #0984e3 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .queue-demo {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .queue-item {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .kick-count {
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .status-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Eclipse ERP Sales Order Status Training</h1>
+            <p>Master the fundamentals of status management and customer calling queues</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <!-- Key Concepts Section -->
+        <div class="training-section">
+            <h2 class="section-title">🔑 Key Concepts</h2>
+            
+            <div class="key-concept">
+                💡 The Golden Rule: There are only TWO future paths for any sales order:
+                <br><strong>1. Ship the Material</strong> or <strong>2. Contact the Customer</strong>
+            </div>
+
+            <div class="status-grid">
+                <div class="status-card ship">
+                    <h3>🚚 Ship Actions</h3>
+                    <p><strong>Pick Up Now:</strong> Ships immediately</p>
+                    <p><strong>Ship Complete:</strong> Ships when all items available</p>
+                    <p><strong>Ship Available:</strong> Ships what's ready, backorders rest</p>
+                    <p><strong>Ship Line Complete:</strong> Ships when each line item is complete</p>
+                    <p><strong>Ship On Date:</strong> Ships on specified date</p>
+                </div>
+
+                <div class="status-card call">
+                    <h3>📞 Contact Actions</h3>
+                    <p><strong>Call Complete:</strong> Contact when all items available</p>
+                    <p><strong>Call Available:</strong> Contact when any items ready</p>
+                    <p><strong>Call On Date:</strong> Contact on specified date</p>
+                </div>
+
+                <div class="status-card special">
+                    <h3>🔧 Special Statuses</h3>
+                    <p><strong>Bid:</strong> Quote only - no inventory commitment</p>
+                    <p><strong>Direct:</strong> Drop ship from vendor to customer</p>
+                </div>
+            </div>
+
+            <div class="key-concept">
+                ⚠️ Critical Inventory Rule: Complete and Available statuses commit inventory IMMEDIATELY, regardless of the date shown!
+            </div>
+
+            <h3 style="margin-top: 30px; color: #2c3e50;">Inventory Commitment Timeline</h3>
+            
+            <div class="inventory-commitment immediate">
+                <strong>Immediate Commitment:</strong> Pick Up Now, Ship Complete, Ship Available, Ship Line Complete, Call Complete, Call Available
+            </div>
+            
+            <div class="inventory-commitment future">
+                <strong>Future Commitment:</strong> Ship On [Date], Call On [Date]
+            </div>
+        </div>
+
+        <!-- Customer Calling Queue Section -->
+        <div class="training-section">
+            <h2 class="section-title">📋 Customer Calling Queue Management</h2>
+            
+            <p style="margin-bottom: 20px;">The Customer Calling Queue is your To-Do List for customer contacts. It fills up when:</p>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li>Material becomes available (Call Available/Complete)</li>
+                <li>Specified date arrives (Call On Date)</li>
+                <li>Delivery promises are at risk (Trouble Queue)</li>
+            </ul>
+
+            <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                <h4 style="color: #2c3e50; margin-bottom: 15px;">Understanding "Queue" vs "To-Do List"</h4>
+                <p style="margin-bottom: 15px;">Joe's explanation: "Queue" isn't really American vernacular - it's a British term meaning "line" (like in The Who's song "Magic Bus" - "Every day I get on the queue"). In computers, a queue should be "first in, first out" - orderly like a bus line.</p>
+                
+                <p style="margin-bottom: 15px;">But in Eclipse, we've adapted the word queue to really mean <strong>To-Do List</strong>. You can reshuffle, resort, and reprioritize - it's not truly first-in-first-out.</p>
+                
+                <div style="background: #e8f4f8; border-left: 4px solid #3498db; padding: 15px; margin: 15px 0;">
+                    <h5 style="color: #2c3e50; margin-bottom: 10px;">Queue Types Available:</h5>
+                    <ul style="line-height: 1.6;">
+                        <li><strong>New Items:</strong> Customers to call because material is now available OR the specified call date has arrived</li>
+                        <li><strong>Trouble Queue:</strong> Customers to call when delivery promises are at risk (proactive communication)</li>
+                        <li><strong>Branch-Specific Queues:</strong> Filter by your specific location</li>
+                        <li><strong>Customer-Specific Widgets:</strong> Create micro-queues for your 5 favorite customers</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 8px; padding: 15px; margin: 15px 0;">
+                    <strong>Pro Tip:</strong> You can create multiple queue widgets on your desktop with pre-answered parameters (branch, customer, writer) so you see exact counts and get flash notifications when counts change. Reach out to BDL by creating a ticket to learn more.
+                </div>
+            </div>
+
+            <div class="key-concept">
+                🎯 Goal: Reduce orders with high "kick counts" - Joe's team built a dictionary item to track how many times each order has been "kicked down the road." 12 kicks ≈ 1 year of delays! Some orders over 2 years old may no longer be legitimate and are just tying up inventory.
+            </div>
+            
+            <div style="background: #f8f9fa; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                <h4 style="color: #2c3e50; margin-bottom: 15px;">Joe's Philosophy on Customer Contact</h4>
+                <blockquote style="border-left: 4px solid #3498db; padding-left: 15px; font-style: italic; color: #555;">
+                    "Every contact with a customer is good contact, even when there's friction. It's better to proactively tell your customer today 'Hey Johnny, I told you I'd have that stuff Monday, but I just found out my vendor won't deliver until Tuesday' than to receive a phone call Monday asking 'Where's my material?'"
+                </blockquote>
+                
+                <p style="margin-top: 15px;">The Trouble Queue helps you make these proactive calls when delivery dates are at risk.</p>
+            </div>
+        </div>
+
+        <!-- Interactive Quiz Section -->
+        <div class="training-section">
+            <h2 class="section-title">🧠 Knowledge Check</h2>
+            
+            <div class="question" data-question="1">
+                <h4>Question 1: A customer calls and says "I need that electrical panel ASAP, ship me whatever you have in stock and backorder the rest." What status should you use?</h4>
+                <div class="options">
+                    <div class="option" data-answer="a">Ship Complete</div>
+                    <div class="option" data-answer="b" data-correct="true">Ship Available</div>
+                    <div class="option" data-answer="c">Call Available</div>
+                    <div class="option" data-answer="d">Ship On Date</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Ship Available means "give them what you got and backorder the rest" - exactly what the customer requested.
+                </div>
+            </div>
+
+            <div class="question" data-question="2">
+                <h4>Question 2: A contractor needs conduit, fittings, and junction boxes for a complete job. They can't use any of it until they have everything. What status is most appropriate?</h4>
+                <div class="options">
+                    <div class="option" data-answer="a" data-correct="true">Ship Complete</div>
+                    <div class="option" data-answer="b">Ship Available</div>
+                    <div class="option" data-answer="c">Pick Up Now</div>
+                    <div class="option" data-answer="d">Call Complete</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Ship Complete ensures all related materials ship together when the entire order is ready.
+                </div>
+            </div>
+
+            <div class="question" data-question="3">
+                <h4>Question 3: When does inventory get committed for "Ship Complete" and "Ship Available" statuses?</h4>
+                <div class="options">
+                    <div class="option" data-answer="a">On the ship date shown</div>
+                    <div class="option" data-answer="b" data-correct="true">Immediately when the status is set</div>
+                    <div class="option" data-answer="c">When the material becomes available</div>
+                    <div class="option" data-answer="d">When the customer calls</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Complete and Available statuses commit inventory immediately - the date shown is just an estimate, not when commitment happens.
+                </div>
+            </div>
+
+            <div class="question" data-question="4">
+                <h4>Question 4: A customer wants material delivered on September 15th for a specific job start date. What status should you use?</h4>
+                <div class="options">
+                    <div class="option" data-answer="a">Ship Complete</div>
+                    <div class="option" data-answer="b">Ship Available</div>
+                    <div class="option" data-answer="c" data-correct="true">Ship On 9/15</div>
+                    <div class="option" data-answer="d">Call On 9/15</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> Ship On [Date] commits inventory for that specific date and ensures delivery timing matches the customer's job schedule.
+                </div>
+            </div>
+
+            <div class="question" data-question="5">
+                <h4>Question 5: You see an order in your calling queue that's been "kicked" 18 times over 18 months. What should you consider?</h4>
+                <div class="options">
+                    <div class="option" data-answer="a">Keep kicking it - they'll eventually want it</div>
+                    <div class="option" data-answer="b" data-correct="true">Evaluate if this is still a legitimate order or should be converted back to a bid</div>
+                    <div class="option" data-answer="c">Change it to Ship Complete</div>
+                    <div class="option" data-answer="d">Ignore it until the customer calls</div>
+                </div>
+                <div class="explanation">
+                    <strong>Correct!</strong> High kick counts indicate orders that may no longer be legitimate and are tying up inventory unnecessarily.
+                </div>
+            </div>
+
+            <button class="btn" onclick="checkAllAnswers()">Check My Answers</button>
+            <button class="btn" onclick="resetQuiz()">Reset Quiz</button>
+        </div>
+
+        <!-- Score Display -->
+        <div id="scoreDisplay" class="score-display" style="display: none;">
+            <h3>Your Score: <span id="score">0</span>/5</h3>
+            <p id="scoreMessage"></p>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="training-section">
+            <h2 class="section-title">📚 Quick Reference Guide</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                <div>
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">When to Use Each Status:</h4>
+                    <ul style="line-height: 1.6;">
+                        <li><strong>Pick Up Now:</strong> Customer waiting, everything in stock</li>
+                        <li><strong>Ship Complete:</strong> Job requires all materials together</li>
+                        <li><strong>Ship Available:</strong> Customer wants partial shipments</li>
+                        <li><strong>Ship On Date:</strong> Specific delivery timing required</li>
+                        <li><strong>Call Complete:</strong> Need to confirm before shipping complete order</li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 style="color: #2c3e50; margin-bottom: 10px;">Queue Management Tips:</h4>
+                    <ul style="line-height: 1.6;">
+                        <li>Work your calling queue daily</li>
+                        <li>Log detailed notes when calling customers</li>
+                        <li>Watch for high kick counts (>10 is suspicious)</li>
+                        <li>Use Trouble Queue to proactively communicate delays</li>
+                        <li>Consider converting old orders back to bids</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentProgress = 0;
+        let answeredQuestions = 0;
+        const totalQuestions = 5;
+
+        function updateProgress() {
+            currentProgress = (answeredQuestions / totalQuestions) * 100;
+            document.getElementById('progressFill').style.width = currentProgress + '%';
+        }
+
+        // Handle option selection
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.closest('.question');
+                const questionNum = question.dataset.question;
+                
+                // Remove previous selections in this question
+                question.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // Add selection to clicked option
+                this.classList.add('selected');
+                
+                // Check if this question was previously answered
+                if (!question.dataset.answered) {
+                    question.dataset.answered = 'true';
+                    answeredQuestions++;
+                    updateProgress();
+                }
+            });
+        });
+
+        function checkAllAnswers() {
+            let score = 0;
+            const questions = document.querySelectorAll('.question');
+            
+            questions.forEach(question => {
+                const selectedOption = question.querySelector('.option.selected');
+                const correctOption = question.querySelector('.option[data-correct="true"]');
+                const explanation = question.querySelector('.explanation');
+                
+                if (selectedOption) {
+                    if (selectedOption === correctOption) {
+                        selectedOption.classList.add('correct');
+                        score++;
+                    } else {
+                        selectedOption.classList.add('incorrect');
+                        correctOption.classList.add('correct');
+                    }
+                    explanation.style.display = 'block';
+                } else {
+                    correctOption.classList.add('correct');
+                    explanation.style.display = 'block';
+                }
+            });
+
+            // Display score
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const scoreSpan = document.getElementById('score');
+            const scoreMessage = document.getElementById('scoreMessage');
+            
+            scoreSpan.textContent = score;
+            
+            if (score === 5) {
+                scoreMessage.textContent = "Excellent! You've mastered the concepts! 🎉";
+            } else if (score >= 4) {
+                scoreMessage.textContent = "Great job! You understand the key concepts well. 👍";
+            } else if (score >= 3) {
+                scoreMessage.textContent = "Good work! Review the explanations to strengthen your knowledge. 📚";
+            } else {
+                scoreMessage.textContent = "Keep studying! Review the training materials and try again. 💪";
+            }
+            
+            scoreDisplay.style.display = 'block';
+            scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function resetQuiz() {
+            // Reset all options
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            // Hide all explanations
+            document.querySelectorAll('.explanation').forEach(explanation => {
+                explanation.style.display = 'none';
+            });
+            
+            // Reset question answered status
+            document.querySelectorAll('.question').forEach(question => {
+                question.removeAttribute('data-answered');
+            });
+            
+            // Hide score display
+            document.getElementById('scoreDisplay').style.display = 'none';
+            
+            // Reset progress
+            answeredQuestions = 0;
+            updateProgress();
+            
+            // Scroll to top of quiz
+            document.querySelector('.quiz-section').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Add hover effects to status cards
+        document.querySelectorAll('.status-card').forEach(card => {
+            card.addEventListener('click', function() {
+                // Add a brief highlight effect
+                this.style.transform = 'scale(1.02)';
+                this.style.transition = 'transform 0.1s ease';
+                
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-5px)';
+                }, 100);
+            });
+        });
+
+        // Initialize progress bar
+        updateProgress();
+    </script>
+</body>
+</html>
